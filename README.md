@@ -7,5 +7,4 @@ gtstrrsy
 tjyf
 d
 yyt
-![](image.png)
-
+![alt text](<Screenshot from 2026-06-24 19-55-29.png>)
