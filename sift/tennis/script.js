@@ -52,24 +52,15 @@ function showGameOver() {
   overlay.classList.remove('hidden');
 }
 
-function attemptPlayerHit() {
+function handlePlayerBounce() {
   if (gameOver) return;
 
-  const nearPaddle =
-    ball.x - ball.radius <= player.x + player.width + 4 &&
-    ball.x + ball.radius >= player.x - 4 &&
-    ball.y >= player.y - ball.radius &&
-    ball.y <= player.y + player.height + ball.radius;
+  score += 1;
+  scoreEl.textContent = score;
 
-  if (nearPaddle) {
-    score += 1;
-    scoreEl.textContent = score;
-    ball.vx = Math.abs(ball.vx) * 1.06 + 0.5;
-    ball.vy = (Math.random() - 0.5) * 3.6;
-    ball.x = player.x + player.width + ball.radius + 2;
-  } else {
-    showGameOver();
-  }
+  ball.vx = Math.abs(ball.vx) * 1.06 + 0.5;
+  ball.vy = (Math.random() - 0.5) * 3.6;
+  ball.x = player.x + player.width + ball.radius + 2;
 }
 
 function updateRobot(delta) {
@@ -141,11 +132,7 @@ function updateBall(delta) {
     ball.y <= player.y + player.height;
 
   if (playerHit) {
-    if (keys.space) {
-      attemptPlayerHit();
-    } else {
-      showGameOver();
-    }
+    handlePlayerBounce();
     return;
   }
 
