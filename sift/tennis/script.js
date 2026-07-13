@@ -29,6 +29,8 @@ const ball = {
 };
 
 const keys = {
+  up: false,
+  down: false,
   left: false,
   right: false,
   space: false,
@@ -100,7 +102,14 @@ function updatePlayer() {
   if (keys.right) {
     player.x += player.speed;
   }
+  if (keys.up) {
+    player.y -= player.speed;
+  }
+  if (keys.down) {
+    player.y += player.speed;
+  }
   player.x = Math.max(0, Math.min(canvas.width / 2 - player.width, player.x));
+  player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
 }
 
 function updateBall(delta) {
@@ -213,6 +222,12 @@ function loop(timestamp) {
 }
 
 window.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowUp' || event.key === 'Up') {
+    keys.up = true;
+  }
+  if (event.key === 'ArrowDown' || event.key === 'Down') {
+    keys.down = true;
+  }
   if (event.key === 'ArrowLeft' || event.key === 'Left') {
     keys.left = true;
   }
@@ -226,6 +241,12 @@ window.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('keyup', (event) => {
+  if (event.key === 'ArrowUp' || event.key === 'Up') {
+    keys.up = false;
+  }
+  if (event.key === 'ArrowDown' || event.key === 'Down') {
+    keys.down = false;
+  }
   if (event.key === 'ArrowLeft' || event.key === 'Left') {
     keys.left = false;
   }
