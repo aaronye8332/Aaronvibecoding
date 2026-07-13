@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tennis Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="hud">
+        <div class="score-card">
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <p class="instructions">Move with ← → and press Space to hit the ball.</p>
+      </section>
+
+      <canvas id="gameCanvas" width="900" height="520"></canvas>
+
+      <div id="gameOverOverlay" class="overlay hidden">
+        <h1>Game Over</h1>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
