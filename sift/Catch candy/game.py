@@ -53,13 +53,13 @@ class Player:
         self.bucket_height = 28
 
     def move(self, keys, dt):
-        if keys[pygame.K_w]:
+        if keys[pygame.K_UP]:
             self.y -= self.speed * dt * 60
-        if keys[pygame.K_s]:
+        if keys[pygame.K_DOWN]:
             self.y += self.speed * dt * 60
-        if keys[pygame.K_a]:
+        if keys[pygame.K_LEFT]:
             self.x -= self.speed * dt * 60
-        if keys[pygame.K_d]:
+        if keys[pygame.K_RIGHT]:
             self.x += self.speed * dt * 60
 
         # Keep the player inside the play area.
@@ -195,6 +195,8 @@ class CandyGame:
         self.running = True
         self.game_over = False
         self.win = False
+        self.difficulty = None
+        self.difficulty_name = ""
 
         self.player = Player(WIDTH // 2, HEIGHT - 120)
         self.cloud = Cloud()
@@ -202,7 +204,7 @@ class CandyGame:
         self.score = 0
         self.lives = 10
         self.spawn_timer = 0.0
-        self.spawn_interval = 0.90
+        self.spawn_interval = 1.10
 
         self.background = self.make_background()
 
@@ -246,6 +248,18 @@ class CandyGame:
             if event.type == pygame.QUIT:
                 self.running = False
 
+    def select_difficulty(self, key):
+        difficulty_map = {
+            pygame.K_1: ("Easy", 1.10),
+            pygame.K_2: ("Medium", 0.80),
+            pygame.K_3: ("Hard", 0.55),
+            pygame.K_4: ("Extra Hard", 0.35),
+        }
+        if key in difficulty_map:
+            self.difficulty_name, self.spawn_interval = difficulty_map[key]
+            self.difficulty = self.difficulty_name.lower().replace(" ", "_")
+            self.spawn_timer = 0.0
+
     def update(self, dt):
         if self.game_over or self.win:
             return
@@ -285,6 +299,28 @@ class CandyGame:
         score_text = self.font.render(f"Score: {self.score}", True, WHITE)
         self.screen.blit(score_text, (WIDTH - 180, 20))
 
+    def draw_start_screen(self):
+        self.screen.blit(self.background, (0, 0))
+        title = self.big_font.render("Candy Catch", True, WHITE)
+        self.screen.blit(title, title.get_rect(center=(WIDTH // 2, 120)))
+
+        help_text = self.font.render("Choose a difficulty with 1-4", True, WHITE)
+        self.screen.blit(help_text, help_text.get_rect(center=(WIDTH // 2, 200)))
+
+        options = [
+            ("1 - Easy", (255, 255, 255)),
+            ("2 - Medium", (255, 220, 120)),
+            ("3 - Hard", (255, 170, 70)),
+            ("4 - Extra Hard", (255, 90, 90)),
+        ]
+        for idx, (text, color) in enumerate(options):
+            label = self.font.render(text, True, color)
+            y = 270 + idx * 42
+            self.screen.blit(label, label.get_rect(center=(WIDTH // 2, y)))
+
+        controls = self.font.render("Controls: Arrow Keys to move", True, WHITE)
+        self.screen.blit(controls, controls.get_rect(center=(WIDTH // 2, 420)))
+
     def draw_end_screen(self, message):
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 140))
@@ -310,6 +346,15 @@ class CandyGame:
         while self.running:
             dt = self.clock.tick(FPS) / 1000.0
             self.handle_events()
+
+            if self.difficulty is None:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        self.select_difficulty(event.key)
+                self.draw_start_screen()
+                pygame.display.flip()
+                continue
+
             self.update(dt)
             self.draw()
             pygame.display.flip()
