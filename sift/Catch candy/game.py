@@ -247,6 +247,8 @@ class CandyGame:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            elif self.difficulty is None and event.type == pygame.KEYDOWN:
+                self.select_difficulty(event.key)
 
     def select_difficulty(self, key):
         difficulty_map = {
@@ -348,9 +350,6 @@ class CandyGame:
             self.handle_events()
 
             if self.difficulty is None:
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        self.select_difficulty(event.key)
                 self.draw_start_screen()
                 pygame.display.flip()
                 continue
