@@ -304,7 +304,7 @@ class CandyGame:
         title = self.big_font.render("Candy Catch", True, WHITE)
         self.screen.blit(title, title.get_rect(center=(WIDTH // 2, 120)))
 
-        help_text = self.font.render("Choose a difficulty with 1-4", True, WHITE)
+        help_text = self.font.render("Press 1, 2, 3, or 4 to choose the difficulty", True, WHITE)
         self.screen.blit(help_text, help_text.get_rect(center=(WIDTH // 2, 200)))
 
         options = [
