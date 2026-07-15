@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CatchCandy</title>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1b1038, #3b1a6b);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .panel {
+      background: rgba(0, 0, 0, 0.25);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    canvas {
+      border: 2px solid white;
+      border-radius: 10px;
+      background: linear-gradient(to bottom, #6fd0ff, #8aff8f);
+      display: block;
+      margin: 0 auto 12px;
+    }
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      border: none;
+      border-radius: 999px;
+      background: #ff7a00;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .hint {
+      margin-top: 8px;
+      color: #f8f0c4;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>CatchCandy</h1>
+    <canvas id="game" width="640" height="480"></canvas>
+    <button id="startBtn">Start Game</button>
+    <div class="hint">Use ← → or A / D to move the basket.</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('startBtn');
+
+    const state = {
+      running: false,
+      score: 0,
+      lives: 3,
+      playerX: canvas.width / 2,
+      playerSpeed: 360,
+      candies: [],
+      spawnTimer: 0,
+      spawnInterval: 850,
+      lastTime: 0,
+      animationId: 0,
+    };
+
+    function resetGame() {
+      state.running = true;
+      state.score = 0;
+      state.lives = 3;
+      state.playerX = canvas.width / 2;
+      state.candies = [];
+      state.spawnTimer = 0;
+      state.lastTime = 0;
+    }
+
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, '#6fd0ff');
+      gradient.addColorStop(1, '#8aff8f');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#7c4f1d';
+      ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+    }
+
+    function drawPlayer() {
+      const y = canvas.height - 70;
+      ctx.fillStyle = '#d96c00';
+      ctx.fillRect(state.playerX - 48, y, 96, 18);
+      ctx.fillStyle = '#8b4c00';
+      ctx.fillRect(state.playerX - 32, y - 24, 64, 24);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(state.playerX - 20, y - 10, 40, 10);
+    }
+
+    function drawCandies() {
+      state.candies.forEach(c => {
+        ctx.save();
+        ctx.translate(c.x, c.y);
+        if (c.type === 'red') {
+          ctx.fillStyle = '#ff4d4d';
+          ctx.fillRect(-12, -16, 24, 32);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(-8, -12, 16, 6);
+        } else if (c.type === 'gold') {
+          ctx.fillStyle = '#ffcd2a';
+          ctx.beginPath();
+          ctx.arc(0, 0, 14, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = '#5e7dff';
+          ctx.beginPath();
+          ctx.arc(0, 0, 13, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+    }
+
+    function drawUI() {
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(12, 12, 180, 50);
+      ctx.fillStyle = 'white';
+      ctx.font = '20px Arial';
+      ctx.fillText(`Score: ${state.score}`, 24, 40);
+      ctx.fillText(`Lives: ${state.lives}`, 24, 66);
+    }
+
+    function drawOverlay() {
+      if (!state.running) {
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 30px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Catch the falling candy!', 320, 200);
+        ctx.font = '18px Arial';
+        ctx.fillText('Press Start and use your arrow keys.', 320, 240);
+        ctx.textAlign = 'left';
+      }
+    }
+
+    function update(delta) {
+      if (!state.running) return;
+
+      const left = keys['ArrowLeft'] || keys['a'] || keys['A'];
+      const right = keys['ArrowRight'] || keys['d'] || keys['D'];
+      if (left && !right) state.playerX -= state.playerSpeed * delta;
+      if (right && !left) state.playerX += state.playerSpeed * delta;
+      state.playerX = Math.max(60, Math.min(canvas.width - 60, state.playerX));
+
+      state.spawnTimer += delta * 1000;
+      if (state.spawnTimer >= state.spawnInterval) {
+        state.spawnTimer = 0;
+        state.candies.push({
+          x: Math.random() * (canvas.width - 80) + 40,
+          y: -20,
+          speed: 180 + Math.random() * 140,
+          type: ['red', 'gold', 'blue'][Math.floor(Math.random() * 3)],
+        });
+      }
+
+      state.candies.forEach(c => {
+        c.y += c.speed * delta;
+      });
+
+      const basketY = canvas.height - 70;
+      state.candies = state.candies.filter(c => {
+        if (c.y > canvas.height - 40) {
+          state.lives -= 1;
+          return false;
+        }
+        const caught = c.y + 16 >= basketY - 10 && c.y - 16 <= basketY + 8 && Math.abs(c.x - state.playerX) < 60;
+        if (caught) {
+          state.score += 10;
+          return false;
+        }
+        return true;
+      });
+
+      if (state.lives <= 0) {
+        state.running = false;
+      }
+    }
+
+    function draw() {
+      drawBackground();
+      drawPlayer();
+      drawCandies();
+      drawUI();
+      drawOverlay();
+    }
+
+    function loop(timestamp) {
+      if (!state.lastTime) state.lastTime = timestamp;
+      const delta = (timestamp - state.lastTime) / 1000;
+      state.lastTime = timestamp;
+      update(delta);
+      draw();
+      state.animationId = requestAnimationFrame(loop);
+    }
+
+    const keys = {};
+    window.addEventListener('keydown', e => {
+      keys[e.key] = true;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'a' || e.key === 'A' || e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+      }
+    });
+    window.addEventListener('keyup', e => {
+      keys[e.key] = false;
+    });
+
+    startBtn.addEventListener('click', () => {
+      resetGame();
+      draw();
+    });
+
+    draw();
+    state.animationId = requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
