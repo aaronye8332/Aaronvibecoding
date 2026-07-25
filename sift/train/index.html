@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Train Decorator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <h1>Train Decorator</h1>
+        <p>Create and save colorful train designs.</p>
+      </header>
+
+      <section id="galleryView" class="view active">
+        <div class="gallery-header">
+          <h2>Gallery</h2>
+          <button id="addBtn" class="fab" aria-label="Create a new train">+</button>
+        </div>
+        <div id="gallery" class="gallery"></div>
+      </section>
+
+      <section id="editorView" class="view">
+        <div class="toolbar">
+          <div class="tool-group">
+            <button class="tool-btn active" data-tool="paintbrush">Paintbrush</button>
+            <button class="tool-btn" data-tool="marker">Marker</button>
+            <button class="tool-btn" data-tool="colored-pencil">Colored Pencil</button>
+            <button id="emojiBtn" class="tool-btn">Emoji Stickers</button>
+          </div>
+          <div class="action-group">
+            <button id="clearBtn" class="action-btn">Clear</button>
+            <button id="saveBtn" class="action-btn save">Save</button>
+            <button id="backBtn" class="action-btn">Back</button>
+          </div>
+        </div>
+
+        <div class="palette" id="palette">
+          <button class="color-swatch active" data-color="#111111" style="--swatch:#111111"></button>
+          <button class="color-swatch" data-color="#ff4d4d" style="--swatch:#ff4d4d"></button>
+          <button class="color-swatch" data-color="#ffb800" style="--swatch:#ffb800"></button>
+          <button class="color-swatch" data-color="#2ecc71" style="--swatch:#2ecc71"></button>
+          <button class="color-swatch" data-color="#3b82f6" style="--swatch:#3b82f6"></button>
+          <button class="color-swatch" data-color="#8b5cf6" style="--swatch:#8b5cf6"></button>
+          <button class="color-swatch" data-color="#f472b6" style="--swatch:#f472b6"></button>
+          <button class="color-swatch" data-color="#ffffff" style="--swatch:#ffffff"></button>
+        </div>
+
+        <div class="emoji-picker" id="emojiPicker">
+          <button data-emoji="😀">😀</button>
+          <button data-emoji="😄">😄</button>
+          <button data-emoji="🚂">🚂</button>
+          <button data-emoji="⭐">⭐</button>
+          <button data-emoji="🌈">🌈</button>
+          <button data-emoji="🎈">🎈</button>
+          <button data-emoji="🎉">🎉</button>
+          <button data-emoji="✨">✨</button>
+        </div>
+
+        <canvas id="trainCanvas" width="900" height="560"></canvas>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

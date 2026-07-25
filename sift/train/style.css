@@ -1,0 +1,157 @@
+:root {
+  color-scheme: light;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fef3c7, #bfdbfe);
+  color: #111827;
+}
+
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.topbar {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.topbar h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.topbar p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.fab {
+  width: 54px;
+  height: 54px;
+  border: none;
+  border-radius: 50%;
+  background: #111827;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.gallery-card {
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.12);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #f3f4f6;
+}
+
+.gallery-card p {
+  margin: 10px 0 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+.toolbar,
+.palette,
+.emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tool-btn,
+.action-btn,
+.color-swatch,
+.emoji-picker button {
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: white;
+  cursor: pointer;
+}
+
+.tool-btn.active,
+.action-btn.save {
+  background: #111827;
+  color: white;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  background: var(--swatch);
+}
+
+.color-swatch.active {
+  outline: 3px solid #111827;
+  outline-offset: 2px;
+}
+
+.emoji-picker {
+  display: none;
+}
+
+.emoji-picker.show {
+  display: flex;
+}
+
+canvas {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  border: 2px solid #111827;
+  border-radius: 16px;
+  background: white;
+  cursor: crosshair;
+  box-shadow: 0 14px 28px rgba(17, 24, 39, 0.16);
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 16px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+  }
+}
